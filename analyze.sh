@@ -38,6 +38,28 @@ echo " $*"
 ERROR=`expr $ERROR + 1`
 }
 
+fn_crit() {
+tput setaf 1
+echo -n CRITICAL - 
+tput sgr0
+echo " $*"
+tput setaf 1
+echo "I can't continue from this condition, Aborting Test"
+tput sgr0
+exit 1
+}
+
+
+##### Start Execution of Tests
+## *Note* We want to start with th really basic checks and get more complicated. Some checks if they fail
+## will prevent future tests, so the intention is we bail on things that will prevent further tests
+
+echo "/////////////////////////////////////////////////"
+echo "/////////////////////////////////////////////////"
+echo
+echo "//// Running Analysis on `hostname`"
+echo 
+
 pushd /tmp > /dev/null
 #Check if we are running on a supported OS
 if [ -f "/etc/redhat-release" ]; then
@@ -48,7 +70,12 @@ else
 fi
 
 #Confirm we have a zenoss user
-cat /etc/passwd | grep $zenuser > /dev/null && fn_ok "$zenuser User Exists" || fn_err "$zenuser User Doesn't Exist"
+cat /etc/passwd | grep "${zenuser}" > /dev/null
+if [ $? -eq 0 ]; then
+	fn_ok "$zenuser User Exists"
+else
+	fn_crit "$zenuser User Doesn't Exist"
+fi
 . /home/zenoss/.bashrc
 
 #Check for Daemons that are not running
@@ -84,13 +111,25 @@ else
 	fn_warn "RabbitMQ Permissions for user $amqp_user on vhost $amqpvhost are not the default."
 fi
 
+#Use DMD to collect a bunch more data
+echo "Connecting your Zenoss Database to gather Additional Information"
+echo "Again, no changes will be made"
+popd > /dev/null
+python data_collect.py
+pushd /tmp > /dev/null
+
+
 echo "Running MySQLTuner (No Changes Will Be Made)"
 durl="http://mysqltuner.com/mysqltuner.pl"
-wget -q $durl && perl mysqltuner.pl || fn_err "Failed to download MySQL Tuner from $$durl"
+tuner_results=/tmp/mysqltuner_results_`date +%s`.txt
+wget -q $durl -O mysqltuner.pl || fn_err "Failed to download MySQL Tuner from $$durl"
+perl mysqltuner.pl > $tuner_results
+echo "You can review the mysqltuner results by typing cat $tuner_results"
 
 #Checks to Add
 ## Check that Memcached CACHESIZE is not the default
 ## sysctl fs.file-max
+## Check Service Pack is installed $ZENHOME/ServicePacks/INSTALLED
 
 #Let the user know their 'score'
 prate=`echo - | awk "{ print $OK/$(($OK+$WARN+$ERROR))*100}"`
@@ -108,3 +147,9 @@ tput sgr0
 
 echo "Please review the output above for suggestions and recommendations to improve your Zenoss installation"
 popd > /dev/null
+cat << EOF
+If you are interested in additional information around performance tuning, please review:
+* http://community.zenoss.org/message/51111
+* http://community.zenoss.org/docs/DOC-13402
+EOF
+
