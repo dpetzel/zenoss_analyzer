@@ -21,7 +21,7 @@ Run the following as the **root** user::
 
 Example Output
 ++++++++++++++
-.. image:: docs/example_output.PNG
+.. image:: https://github.com/dpetzel/zenoss_core4_analyzer/blob/master/docs/example_output.PNG?raw=true
 
 Future Checks
 +++++++++++++
