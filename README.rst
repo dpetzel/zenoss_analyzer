@@ -12,9 +12,9 @@ not be optimal
 
 Usage
 +++++
-Run the following as the *root* user::
+Run the following as the **root** user::
 
-	cd /tmp
+   cd /tmp
    wget https://github.com/dpetzel/zenoss_core4_analyzer/zipball/master -O zenoss_core4_analyzer.zip
    unzip -j zenoss_core4_analyzer.zip -d zenoss_core4_analyzer
    sh analyze.sh
