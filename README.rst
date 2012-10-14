@@ -19,6 +19,10 @@ Run the following as the **root** user::
    unzip -j zenoss_core4_analyzer.zip -d zenoss_core4_analyzer
    sh analyze.sh
 
+Example Output
+++++++++++++++
+.. image:: docs/example_output.PNG
+
 Future Checks
 +++++++++++++
 Things I want to add but have not yet. A dropping spot as I see solutions posted in the forums and such:: 
