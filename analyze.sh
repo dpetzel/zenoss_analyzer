@@ -234,7 +234,7 @@ else
 	if [ `cat /etc/security/limits.conf | grep -c $zenuser` -gt 0 ]; then
 		fn_ok "Appears you have explicitly configured file descriptors. Please see http://community.zenoss.org/docs/DOC-13428"
 	else
-		fn_warn "You have not explicitly configured file descriptors. Please see http://community.zenoss.org/docs/DOC-13428"
+		fn_warn "You have not explicitly configured file descriptors per http://community.zenoss.org/docs/DOC-13428"
 	fi
 fi
 
