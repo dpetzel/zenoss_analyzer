@@ -95,8 +95,11 @@ fi
 total_mem=`free -m | grep -i mem | gawk '{print $2}'`
 procs=`cat /proc/cpuinfo | grep "^processor" | wc -l`
 cores=`cat /proc/cpuinfo | grep "^cpu cores" | uniq | gawk '{print $4}'`
-#Core info lifted from https://www.ibm.com/developerworks/mydeveloperworks/blogs/brian/entry/linux_show_the_number_of_cpu_cores_on_your_system17?lang=en
 total_cores=`expr $procs \* $cores`
+if [ "$total_cores" = "" ]; then
+	echo "Unable to Determine Number of CPU Cores. Assuming 1"
+	total_cores=1
+fi
 
 hard_req_link="http://community.zenoss.org/docs/DOC-13400"
 msg_mem_to_small="${total_mem}MB is less than the suggested minimum amount of RAM. Please see $hard_req_link"

@@ -18,6 +18,7 @@ Run the following as the **root** user::
    cd /tmp
    wget https://github.com/dpetzel/zenoss_analyzer/zipball/master -O zenoss_analyzer.zip
    unzip -j zenoss_analyzer.zip -d zenoss_analyzer
+   cd zenoss_analyzer
    sh analyze.sh
 
 Example Output
